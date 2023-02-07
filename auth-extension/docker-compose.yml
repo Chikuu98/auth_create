@@ -1,9 +1,7 @@
 version: "3"
 services:
-  db:
-    image: postgres
-    restart: always
+  redis:
+    image: redis
     ports:
-      - "5433:5432"
-    environment:
-      POSTGRES_PASSWORD: pass123
+      -"6379:6379"
+    restart: always
