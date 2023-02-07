@@ -52,15 +52,19 @@ export class AuthenticationService {
         if (!IsEmail) {
             throw new UnauthorizedException('Password does not match');
         }
+        return await this.generateTokens(user);
+    }
+
+    async generateTokens(user: User) {
         const [accessToken, refreshToken] = await Promise.all([
             this.signToken<Partial<ActiveUserData>>(
                 user.id,
                 this.jwtConfiguration.accessTokenTtl,
-                { email: user.email},
+                { email: user.email }
             ),
             this.signToken(user.id, this.jwtConfiguration.refreshTokenTtl)
         ]);
-        
+
         return {
             accessToken,
             refreshToken
@@ -68,6 +72,7 @@ export class AuthenticationService {
     }
 
     async refreshTokens(refreshTokenDto: RefreshTokenDto) {
+        try {
         const { sub } = await this.jwtService.verifyAsync<
         Pick<ActiveUserData, 'sub'>
         >(
@@ -80,9 +85,13 @@ export class AuthenticationService {
         const user = await this.usersRepository.findOneByOrFail({
             id: sub,
         });
+        return this.generateTokens(user);
+        } catch(err){
+            throw new UnauthorizedException();
+        }
     }
 
-    private async signToken<T>(userId: number, expiresIn: number, payload?: T) {
+    async signToken<T>(userId: number, expiresIn: number, payload?: T) {
         return await this.jwtService.signAsync(
             {
                 sub: userId,
