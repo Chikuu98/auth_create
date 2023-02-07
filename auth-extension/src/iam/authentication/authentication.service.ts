@@ -60,9 +60,11 @@ export class AuthenticationService {
             issuer: this.jwtConfiguration.issuer,
             secret: this.jwtConfiguration.secret,
             expiresIn: this.jwtConfiguration.accessTokenTtl,
-        }
+        },
         );
         
-        return true;
+        return {
+            accessToken,
+        };
     }
 }
