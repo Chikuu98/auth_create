@@ -6,6 +6,7 @@ import { User } from 'src/users/entities/user.entity';
 import { Repository } from 'typeorm';
 import jwtConfig from '../config/jwt.config';
 import { HashingService } from '../hashing/hashing.service';
+import { ActiveUserData } from '../interfaces/active-user-interface';
 import { SignInDto } from './dto/sign-in.dto/sign-in.dto';
 import { SignUpDto } from './dto/sign-up.dto/sign-up.dto';
 
@@ -54,7 +55,7 @@ export class AuthenticationService {
         {
             sub: user.id,
             email: user.email,
-        },
+        } as ActiveUserData,
         {
             audience: this.jwtConfiguration.audience,
             issuer: this.jwtConfiguration.issuer,
