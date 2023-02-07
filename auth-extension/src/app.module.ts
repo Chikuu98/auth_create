@@ -6,9 +6,12 @@ import { CoffeesModule } from './coffees/coffees.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { IamModule } from './iam/iam.module';
 import { User } from './users/entities/user.entity';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [UsersModule,
+  imports: [
+    ConfigModule.forRoot(),
+    UsersModule,
     CoffeesModule,
     TypeOrmModule.forRoot({
       logging: true,
