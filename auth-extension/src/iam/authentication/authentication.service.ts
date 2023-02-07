@@ -7,6 +7,7 @@ import { Repository } from 'typeorm';
 import jwtConfig from '../config/jwt.config';
 import { HashingService } from '../hashing/hashing.service';
 import { ActiveUserData } from '../interfaces/active-user-interface';
+import { RefreshTokenDto } from './dto/refresh-token.dto/refresh-token.dto';
 import { SignInDto } from './dto/sign-in.dto/sign-in.dto';
 import { SignUpDto } from './dto/sign-up.dto/sign-up.dto';
 
@@ -64,6 +65,21 @@ export class AuthenticationService {
             accessToken,
             refreshToken
         };
+    }
+
+    async refreshTokens(refreshTokenDto: RefreshTokenDto) {
+        const { sub } = await this.jwtService.verifyAsync<
+        Pick<ActiveUserData, 'sub'>
+        >(
+            refreshTokenDto.refreshToken, {
+                secret: this.jwtConfiguration.secret,
+                audience: this.jwtConfiguration.audience,
+                issuer: this.jwtConfiguration.issuer,
+            }
+        );
+        const user = await this.usersRepository.findOneByOrFail({
+            id: sub,
+        });
     }
 
     private async signToken<T>(userId: number, expiresIn: number, payload?: T) {
