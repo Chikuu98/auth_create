@@ -5,19 +5,21 @@ import { UsersModule } from './users/users.module';
 import { CoffeesModule } from './coffees/coffees.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { IamModule } from './iam/iam.module';
+import { User } from './users/entities/user.entity';
 
 @Module({
   imports: [UsersModule,
     CoffeesModule,
     TypeOrmModule.forRoot({
-      type: 'postgres',
+      logging: true,
+      type: 'mysql',
       host: 'localhost',
-      port: 5433,
-      username: 'postgres',
-      password: 'pass123',
-      database: 'postgres',
-      autoLoadEntities: true,
+      port: 3307,
+      username: 'root',
+      password: 'root',
+      database: 'test1',
       synchronize: true,
+      entities: [User],
     }),
     IamModule,
   ],
