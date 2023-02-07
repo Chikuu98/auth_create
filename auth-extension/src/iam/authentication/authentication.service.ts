@@ -19,10 +19,11 @@ export class AuthenticationService {
             const user = new User();
             user.email = signUpDto.email;
             user.password = await this.hashingService.hash(signUpDto.password);
+
             await this.usersRepository.save(user);
         } catch (err) {
-            const pgUniqueViolationErrorCode = '23505';
-            if (err.code === pgUniqueViolationErrorCode) {
+            const uniqueViolationErrorCode = 'ER_DUP_ENTRY';
+            if (err.code === uniqueViolationErrorCode) {
                 throw new ConflictException();
             }
             throw err;
